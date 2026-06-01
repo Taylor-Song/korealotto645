@@ -26,6 +26,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
+      - name: Debug API Access
+        run: |
+          python - <<'PY'
+          import requests
+          url = "https://www.dhlottery.co.kr/common.do"
+          params = {"method": "getLottoNumber", "drwNo": 1204}
+          headers = {
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36",
+              "Accept": "application/json, text/javascript, */*; q=0.01",
+              "Referer": "https://www.dhlottery.co.kr/gameResult.do?method=byWin",
+              "X-Requested-With": "XMLHttpRequest",
+          }
+          try:
+              r = requests.get(url, params=params, headers=headers, timeout=15)
+              print(f"Status: {r.status_code}")
+              print(f"Content-Type: {r.headers.get('Content-Type')}")
+              print(f"URL: {r.url}")
+              print(f"Body Preview: {repr(r.text[:500])}")
+          except Exception as e:
+              print(f"Request failed: {e}")
+          PY
+
       - name: Run update script
         run: python scripts/update_korea_lotto.py
 
