@@ -1,7 +1,360 @@
 {
   "schemaVersion": 1,
   "baseDrawNo": 1204,
-  "updatedAt": "2026-06-02T00:00:00Z",
-  "latestDrawNo": 1204,
-  "draws": []
+  "updatedAt": "2026-06-02T00:03:01.359418Z",
+  "latestDrawNo": 1226,
+  "draws": [
+    {
+      "drawNo": 1205,
+      "drawDate": "2026-01-03",
+      "numbers": [
+        1,
+        4,
+        16,
+        23,
+        31,
+        41
+      ],
+      "bonusNumber": 2,
+      "firstWinnerCount": 10,
+      "firstPrizeAmount": 3226386263,
+      "totalSellAmount": 132670747000
+    },
+    {
+      "drawNo": 1206,
+      "drawDate": "2026-01-10",
+      "numbers": [
+        1,
+        3,
+        17,
+        26,
+        27,
+        42
+      ],
+      "bonusNumber": 23,
+      "firstWinnerCount": 15,
+      "firstPrizeAmount": 1868807000,
+      "totalSellAmount": 121012690000
+    },
+    {
+      "drawNo": 1207,
+      "drawDate": "2026-01-17",
+      "numbers": [
+        10,
+        22,
+        24,
+        27,
+        38,
+        45
+      ],
+      "bonusNumber": 11,
+      "firstWinnerCount": 17,
+      "firstPrizeAmount": 1733202949,
+      "totalSellAmount": 122934287000
+    },
+    {
+      "drawNo": 1208,
+      "drawDate": "2026-01-24",
+      "numbers": [
+        6,
+        27,
+        30,
+        36,
+        38,
+        42
+      ],
+      "bonusNumber": 25,
+      "firstWinnerCount": 6,
+      "firstPrizeAmount": 5001713625,
+      "totalSellAmount": 120408668000
+    },
+    {
+      "drawNo": 1209,
+      "drawDate": "2026-01-31",
+      "numbers": [
+        2,
+        17,
+        20,
+        35,
+        37,
+        39
+      ],
+      "bonusNumber": 24,
+      "firstWinnerCount": 22,
+      "firstPrizeAmount": 1371910466,
+      "totalSellAmount": 124040394000
+    },
+    {
+      "drawNo": 1210,
+      "drawDate": "2026-02-07",
+      "numbers": [
+        1,
+        7,
+        9,
+        17,
+        27,
+        38
+      ],
+      "bonusNumber": 31,
+      "firstWinnerCount": 24,
+      "firstPrizeAmount": 1102298407,
+      "totalSellAmount": 123111058000
+    },
+    {
+      "drawNo": 1211,
+      "drawDate": "2026-02-14",
+      "numbers": [
+        23,
+        26,
+        27,
+        35,
+        38,
+        40
+      ],
+      "bonusNumber": 10,
+      "firstWinnerCount": 14,
+      "firstPrizeAmount": 2370956036,
+      "totalSellAmount": 134945802000
+    },
+    {
+      "drawNo": 1212,
+      "drawDate": "2026-02-21",
+      "numbers": [
+        5,
+        8,
+        25,
+        31,
+        41,
+        44
+      ],
+      "bonusNumber": 45,
+      "firstWinnerCount": 12,
+      "firstPrizeAmount": 2654089032,
+      "totalSellAmount": 131727929000
+    },
+    {
+      "drawNo": 1213,
+      "drawDate": "2026-02-28",
+      "numbers": [
+        5,
+        11,
+        25,
+        27,
+        36,
+        38
+      ],
+      "bonusNumber": 2,
+      "firstWinnerCount": 18,
+      "firstPrizeAmount": 1740011646,
+      "totalSellAmount": 131111079000
+    },
+    {
+      "drawNo": 1214,
+      "drawDate": "2026-03-07",
+      "numbers": [
+        10,
+        15,
+        19,
+        27,
+        30,
+        33
+      ],
+      "bonusNumber": 14,
+      "firstWinnerCount": 12,
+      "firstPrizeAmount": 2431577188,
+      "totalSellAmount": 124815860000
+    },
+    {
+      "drawNo": 1215,
+      "drawDate": "2026-03-14",
+      "numbers": [
+        13,
+        15,
+        19,
+        21,
+        44,
+        45
+      ],
+      "bonusNumber": 39,
+      "firstWinnerCount": 16,
+      "firstPrizeAmount": 1998542133,
+      "totalSellAmount": 126977101000
+    },
+    {
+      "drawNo": 1216,
+      "drawDate": "2026-03-21",
+      "numbers": [
+        3,
+        10,
+        14,
+        15,
+        23,
+        24
+      ],
+      "bonusNumber": 25,
+      "firstWinnerCount": 14,
+      "firstPrizeAmount": 2148654000,
+      "totalSellAmount": 125556526000
+    },
+    {
+      "drawNo": 1217,
+      "drawDate": "2026-03-28",
+      "numbers": [
+        8,
+        10,
+        15,
+        20,
+        29,
+        31
+      ],
+      "bonusNumber": 41,
+      "firstWinnerCount": 14,
+      "firstPrizeAmount": 2179738018,
+      "totalSellAmount": 125155256000
+    },
+    {
+      "drawNo": 1218,
+      "drawDate": "2026-04-04",
+      "numbers": [
+        3,
+        28,
+        31,
+        32,
+        42,
+        45
+      ],
+      "bonusNumber": 25,
+      "firstWinnerCount": 18,
+      "firstPrizeAmount": 1714482042,
+      "totalSellAmount": 123335928000
+    },
+    {
+      "drawNo": 1219,
+      "drawDate": "2026-04-11",
+      "numbers": [
+        1,
+        2,
+        15,
+        28,
+        39,
+        45
+      ],
+      "bonusNumber": 31,
+      "firstWinnerCount": 12,
+      "firstPrizeAmount": 2508232844,
+      "totalSellAmount": 120945801000
+    },
+    {
+      "drawNo": 1220,
+      "drawDate": "2026-04-18",
+      "numbers": [
+        2,
+        22,
+        25,
+        28,
+        34,
+        43
+      ],
+      "bonusNumber": 16,
+      "firstWinnerCount": 14,
+      "firstPrizeAmount": 2114514161,
+      "totalSellAmount": 121958822000
+    },
+    {
+      "drawNo": 1221,
+      "drawDate": "2026-04-25",
+      "numbers": [
+        6,
+        13,
+        18,
+        28,
+        30,
+        36
+      ],
+      "bonusNumber": 9,
+      "firstWinnerCount": 16,
+      "firstPrizeAmount": 1830801165,
+      "totalSellAmount": 122979623000
+    },
+    {
+      "drawNo": 1222,
+      "drawDate": "2026-05-02",
+      "numbers": [
+        4,
+        11,
+        17,
+        22,
+        32,
+        41
+      ],
+      "bonusNumber": 34,
+      "firstWinnerCount": 24,
+      "firstPrizeAmount": 1202986844,
+      "totalSellAmount": 124243558000
+    },
+    {
+      "drawNo": 1223,
+      "drawDate": "2026-05-09",
+      "numbers": [
+        16,
+        18,
+        20,
+        32,
+        33,
+        39
+      ],
+      "bonusNumber": 26,
+      "firstWinnerCount": 16,
+      "firstPrizeAmount": 1857554133,
+      "totalSellAmount": 122621163000
+    },
+    {
+      "drawNo": 1224,
+      "drawDate": "2026-05-16",
+      "numbers": [
+        9,
+        18,
+        21,
+        27,
+        44,
+        45
+      ],
+      "bonusNumber": 28,
+      "firstWinnerCount": 12,
+      "firstPrizeAmount": 2414855250,
+      "totalSellAmount": 121110408000
+    },
+    {
+      "drawNo": 1225,
+      "drawDate": "2026-05-23",
+      "numbers": [
+        8,
+        9,
+        19,
+        25,
+        41,
+        42
+      ],
+      "bonusNumber": 33,
+      "firstWinnerCount": 13,
+      "firstPrizeAmount": 2228133087,
+      "totalSellAmount": 120402887000
+    },
+    {
+      "drawNo": 1226,
+      "drawDate": "2026-05-30",
+      "numbers": [
+        4,
+        6,
+        13,
+        17,
+        26,
+        28
+      ],
+      "bonusNumber": 41,
+      "firstWinnerCount": 10,
+      "firstPrizeAmount": 2815230113,
+      "totalSellAmount": 120259943000
+    }
+  ]
 }

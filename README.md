@@ -45,4 +45,12 @@
 
 ## 관리 안내
 
-데이터 업데이트 스크립트는 `scripts/update_korea_lotto.py`에 위치하며, 동행복권 API를 사용하여 데이터를 수집합니다. 수동으로 업데이트를 실행하려면 GitHub Actions 탭에서 `Update Korea Lotto Data` 워크플로우를 `workflow_dispatch`로 실행하십시오.
+데이터 업데이트 스크립트는 `scripts/update_korea_lotto.py`에 위치하며 다음의 소스를 사용합니다:
+1. **공식 소스**: 동행복권 API (우선 시도)
+2. **백업 소스**: [smok95/lotto](https://github.com/smok95/lotto) 공개 JSON 아카이브 (공식 소스 실패 시 사용)
+
+모든 데이터는 수집 후 검증 및 정규화 과정을 거쳐 이 저장소의 피드([draws_delta.json](https://taylor-song.github.io/korealotto645/data/draws_delta.json))로 발행됩니다. 
+
+**주의**: 이 피드는 안드로이드 앱의 편의를 위해 제공되는 데이터이며, 법적인 효력을 갖는 공식 당첨 결과는 반드시 [동행복권 홈페이지](https://www.dhlottery.co.kr)에서 확인하시기 바랍니다.
+
+수동으로 업데이트를 실행하려면 GitHub Actions 탭에서 `Update Korea Lotto Data` 워크플로우를 `workflow_dispatch`로 실행하십시오.
