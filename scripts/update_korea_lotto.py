@@ -10,6 +10,7 @@ BASE_DRAW_NO = 1204
 
 # Sources
 DHLOTTERY_URL = "https://www.dhlottery.co.kr/common.do"
+SMOK95_LATEST_URL = "https://smok95.github.io/lotto/results/latest.json"
 SMOK95_ALL_URL = "https://smok95.github.io/lotto/results/all.json"
 SMOK95_PER_DRAW_URL = "https://smok95.github.io/lotto/results/{}.json"
 
@@ -46,6 +47,37 @@ def validate_draw(draw):
     except Exception:
         return False
 
+def get_upstream_latest():
+    """Determines the actual latest draw number available upstream."""
+    print("Determining upstream latest draw number...")
+    
+    # Priority 1: smok95 latest.json
+    try:
+        response = requests.get(SMOK95_LATEST_URL, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            latest = data.get("draw_no")
+            if isinstance(latest, int):
+                print(f"Upstream latest (smok95 latest.json): {latest}")
+                return latest
+    except Exception as e:
+        print(f"Smok95 latest.json fetch failed: {e}")
+
+    # Priority 2: smok95 all.json
+    try:
+        response = requests.get(SMOK95_ALL_URL, timeout=15)
+        if response.status_code == 200:
+            all_data = response.json()
+            if all_data:
+                latest = max(item.get("draw_no", 0) for item in all_data)
+                if latest > 0:
+                    print(f"Upstream latest (smok95 all.json): {latest}")
+                    return latest
+    except Exception as e:
+        print(f"Smok95 all.json fetch failed: {e}")
+
+    return None
+
 def fetch_from_dhlottery(draw_no):
     """Fetches draw data from official dhlottery endpoint."""
     headers = {
@@ -78,16 +110,13 @@ def fetch_from_dhlottery(draw_no):
                 return FetchResult.SUCCESS, draw_info
             return FetchResult.INVALID_RESPONSE, None
         return FetchResult.UNAVAILABLE, None
-    except Exception as e:
-        print(f"DHLottery fetch error for {draw_no}: {e}")
+    except Exception:
         return FetchResult.NETWORK_ERROR, None
 
 def normalize_smok95(data):
     """Normalizes smok95 JSON format to our canonical format."""
     try:
         divisions = data.get("divisions", [])
-        # In smok95 format, divisions[0] is typically the 1st prize.
-        # If 1st prize had no winners, it might be an empty dict or missing.
         p1 = divisions[0] if len(divisions) > 0 and isinstance(divisions[0], dict) else {}
         
         draw_info = {
@@ -102,48 +131,21 @@ def normalize_smok95(data):
         if validate_draw(draw_info):
             return draw_info
         return None
-    except Exception as e:
-        print(f"Smok95 normalization error: {e}")
+    except Exception:
         return None
 
-def fetch_fallback_smok95(missing_draws):
-    """Fetches missing draws from smok95 fallback source."""
-    results = {}
-    print(f"Trying smok95 fallback source for missing draws: {missing_draws}")
-    
-    # Strategy: try all.json first as it's efficient for multiple draws
+def fetch_fallback_smok95(draw_no):
+    """Fetches a specific draw from smok95 fallback source."""
     try:
-        response = requests.get(SMOK95_ALL_URL, timeout=15)
+        url = SMOK95_PER_DRAW_URL.format(draw_no)
+        response = requests.get(url, timeout=10)
         if response.status_code == 200:
-            all_data = response.json()
-            for item in all_data:
-                d_no = item.get("draw_no")
-                if d_no in missing_draws:
-                    norm = normalize_smok95(item)
-                    if norm:
-                        results[d_no] = norm
-            if results:
-                print(f"Recovered {len(results)} draws from smok95 all.json")
-                return results
-    except Exception as e:
-        print(f"Smok95 all.json fetch failed: {e}")
-
-    # If all.json didn't have all we need, try per-draw as last resort
-    remaining = [d for d in missing_draws if d not in results]
-    for d_no in remaining:
-        try:
-            url = SMOK95_PER_DRAW_URL.format(d_no)
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
-                norm = normalize_smok95(response.json())
-                if norm:
-                    results[d_no] = norm
-                    print(f"Recovered draw {d_no} from smok95 per-draw JSON")
-            time.sleep(0.5)
-        except Exception:
-            pass
-            
-    return results
+            norm = normalize_smok95(response.json())
+            if norm:
+                return FetchResult.SUCCESS, norm
+        return FetchResult.INVALID_RESPONSE, None
+    except Exception:
+        return FetchResult.NETWORK_ERROR, None
 
 def main():
     if not os.path.exists(DATA_FILE):
@@ -152,69 +154,92 @@ def main():
         with open(DATA_FILE, "r", encoding="utf-8") as f:
             feed_data = json.load(f)
 
-    # Determine what's missing
+    current_header_latest = feed_data.get("latestDrawNo", BASE_DRAW_NO)
     existing_nos = {d["drawNo"] for d in feed_data["draws"]}
-    current_max = max(existing_nos) if existing_nos else BASE_DRAW_NO
+    current_actual_latest = max(existing_nos) if existing_nos else BASE_DRAW_NO
     
-    # We estimate the current draw number to probe dhlottery
-    # 1204 was around Feb 2026. 
-    # Today is June 2026. Roughly 15 weeks passed (~1219).
-    # We probe up to current_max + 10 or until failures.
-    
-    found_any = False
-    new_draws = {}
-    
-    print(f"Current feed latest: {current_max}")
-    print("Trying official dhlottery source...")
-    
-    target_draw = current_max + 1
-    fail_count = 0
-    while fail_count < 2:
-        res, info = fetch_from_dhlottery(target_draw)
-        if res == FetchResult.SUCCESS:
-            new_draws[target_draw] = info
-            fail_count = 0
-            print(f"Added draw {target_draw} from dhlottery")
-        elif res == FetchResult.UNAVAILABLE:
-            # Likely reached the future
-            break
+    print(f"Current feed latest (header): {current_header_latest}")
+    print(f"Current feed latest (actual): {current_actual_latest}")
+
+    upstream_latest = get_upstream_latest()
+    if upstream_latest is None:
+        print("::warning::Could not determine upstream latest draw. Existing feed preserved.")
+        return
+
+    # We want to sync up to upstream_latest, even if current_actual_latest is behind
+    missing_range = []
+    goal = upstream_latest
+    for d_no in range(BASE_DRAW_NO + 1, goal + 1):
+        if d_no not in existing_nos:
+            missing_range.append(d_no)
+
+    if not missing_range:
+        # Check if header needs fix
+        if current_header_latest != current_actual_latest:
+            print(f"No new draws missing, but fixing header latestDrawNo to {current_actual_latest}")
+            feed_data["latestDrawNo"] = current_actual_latest
+            feed_data["updatedAt"] = datetime.datetime.utcnow().isoformat() + "Z"
+            with open(DATA_FILE, "w", encoding="utf-8") as f:
+                json.dump(feed_data, f, ensure_ascii=False, indent=2)
+            print("Done.")
         else:
-            # Network or Invalid response
-            print(f"::warning::dhlottery failed for {target_draw} (result: {res.name})")
-            fail_count += 1
-        target_draw += 1
-        time.sleep(1)
+            print(f"No new draw available and header is consistent. (Upstream: {upstream_latest})")
+        return
 
-    # If we missed any draws (e.g. gaps between current_max and where dhlottery failed)
-    # OR if dhlottery didn't return anything at all but we suspect newer data exists.
-    # We'll use fallback to fill gaps and extend.
-    
-    # Probe a bit further with fallback just in case
-    missing_candidates = list(range(current_max + 1, current_max + 30))
-    # Filter out what we already got from dhlottery
-    missing_candidates = [d for d in missing_candidates if d not in new_draws and d not in existing_nos]
-    
-    fallback_results = fetch_fallback_smok95(missing_candidates)
-    new_draws.update(fallback_results)
+    print(f"Missing range: {missing_range[0]}..{missing_range[-1]} ({len(missing_range)} draws)")
 
-    if new_draws:
-        # Merge
-        for d_no in sorted(new_draws.keys()):
-            if d_no not in existing_nos:
-                feed_data["draws"].append(new_draws[d_no])
+    # Pre-load all.json
+    cached_fallback_data = {}
+    try:
+        print("Fetching all.json from fallback to speed up sync...")
+        response = requests.get(SMOK95_ALL_URL, timeout=15)
+        if response.status_code == 200:
+            for item in response.json():
+                d_no = item.get("draw_no")
+                if d_no in missing_range:
+                    norm = normalize_smok95(item)
+                    if norm:
+                        cached_fallback_data[d_no] = norm
+        print(f"Pre-loaded {len(cached_fallback_data)} draws from all.json")
+    except Exception:
+        print("Failed to pre-load all.json, will fetch per-draw.")
+
+    change_count = 0
+    for d_no in missing_range:
+        # Step 1: Try DHLottery
+        res, info = fetch_from_dhlottery(d_no)
         
+        # Step 2: Try Cached Fallback
+        if res != FetchResult.SUCCESS and d_no in cached_fallback_data:
+            info = cached_fallback_data[d_no]
+            res = FetchResult.SUCCESS
+            print(f"Draw {d_no}: Recovered from cached all.json")
+        
+        # Step 3: Try Per-Draw Fallback
+        if res != FetchResult.SUCCESS:
+            res, info = fetch_fallback_smok95(d_no)
+            if res == FetchResult.SUCCESS:
+                print(f"Draw {d_no}: Recovered from smok95 per-draw JSON")
+
+        if res == FetchResult.SUCCESS:
+            feed_data["draws"].append(info)
+            change_count += 1
+        else:
+            print(f"::warning::Failed to fetch draw {d_no} from all sources.")
+
+    if change_count > 0 or current_header_latest != current_actual_latest:
         feed_data["draws"].sort(key=lambda x: x["drawNo"])
-        feed_data["latestDrawNo"] = max(d["drawNo"] for d in feed_data["draws"])
+        actual_max = max(d["drawNo"] for d in feed_data["draws"])
+        feed_data["latestDrawNo"] = actual_max
         feed_data["updatedAt"] = datetime.datetime.utcnow().isoformat() + "Z"
         
-        # Atomic write
         temp_file = DATA_FILE + ".tmp"
         with open(temp_file, "w", encoding="utf-8") as f:
             json.dump(feed_data, f, ensure_ascii=False, indent=2)
         os.replace(temp_file, DATA_FILE)
-        print(f"Successfully updated feed to draw {feed_data['latestDrawNo']} (added {len(new_draws)} draws)")
+        print(f"Summary: Added/Updated {change_count} draws. Final latestDrawNo: {feed_data['latestDrawNo']}")
     else:
-        print("No new valid draws found from any source.")
+        print("No changes made to the feed.")
 
 if __name__ == "__main__":
     main()
