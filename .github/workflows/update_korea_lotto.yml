@@ -2,8 +2,16 @@ name: Update Korea Lotto Data
 
 on:
   schedule:
-    # Sunday at 03:00 UTC (12:00 KST)
-    - cron: '0 3 * * 0'
+    # Saturday 21:00 KST = Saturday 12:00 UTC
+    - cron: '0 12 * * 6'
+    # Saturday 21:30 KST = Saturday 12:30 UTC
+    - cron: '30 12 * * 6'
+    # Saturday 22:30 KST = Saturday 13:30 UTC
+    - cron: '30 13 * * 6'
+    # Sunday 00:30 KST = Saturday 15:30 UTC
+    - cron: '30 15 * * 6'
+    # Sunday 09:00 KST = Sunday 00:00 UTC
+    - cron: '0 0 * * 0'
   workflow_dispatch:
 
 permissions:
