@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "baseDrawNo": 1204,
-  "updatedAt": "2026-10-03T15:29:12.499887Z",
-  "latestDrawNo": 1244,
+  "updatedAt": "2026-10-10T16:39:12.044945Z",
+  "latestDrawNo": 1245,
   "draws": [
     {
       "drawNo": 1205,
@@ -643,6 +643,22 @@
       "firstWinnerCount": 18,
       "firstPrizeAmount": 1604686625,
       "totalSellAmount": 123436098000
+    },
+    {
+      "drawNo": 1245,
+      "drawDate": "2026-10-10",
+      "numbers": [
+        4,
+        5,
+        25,
+        28,
+        32,
+        42
+      ],
+      "bonusNumber": 12,
+      "firstWinnerCount": 10,
+      "firstPrizeAmount": 3006515775,
+      "totalSellAmount": 124358734000
     }
   ]
 }
